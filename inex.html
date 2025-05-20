@@ -1,1 +1,2549 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .quiz-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        .question {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+        .option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        .option:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .score {
+            text-align: right;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 480px) {
+            .quiz-container {
+                padding: 15px;
+            }
+            .question {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="score">Правильных ответов: <span id="score">0</span></div>
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+    </div>    <script>
+        const questions = [
+            
+  {
+    "question": "What are the five components of an information system?",
+    "variants": [
+      "Hardware, Software, Network, Data, Users",
+      "Hardware, Software, Data, People, Process",
+      "Software, Data, Network, Server, Web",
+      "Input, Output, Process, Storage, Feedback"
+    ],
+    "correct_answer": "Hardware, Software, Data, People, Process"
+  },
+  {
+    "question": "Which of the following is considered hardware in an information system?",
+    "variants": [
+      "Windows OS",
+      "Excel",
+      "Keyboard",
+      "Internet Explorer"
+    ],
+    "correct_answer": "Keyboard"
+  },
+  {
+    "question": "What is software?",
+    "variants": [
+      "Tangible physical devices",
+      "Users interacting with the system",
+      "Set of instructions that tell hardware what to do",
+      "A network component"
+    ],
+    "correct_answer": "Set of instructions that tell hardware what to do"
+  },
+  {
+    "question": "Which of the following is NOT a valid category of software?",
+    "variants": [
+      "Operating system",
+      "Application software",
+      "Firmware",
+      "Process engineering software"
+    ],
+    "correct_answer": "Process engineering software"
+  },
+  {
+    "question": "What is data?",
+    "variants": [
+      "An analysis of system requirements",
+      "A set of facts used by an information system",
+      "Any form of technology",
+      "Instructions for hardware"
+    ],
+    "correct_answer": "A set of facts used by an information system"
+  },
+  {
+    "question": "Which is an example of application software?",
+    "variants": [
+      "Linux",
+      "BIOS",
+      "Microsoft Excel",
+      "Hard drive"
+    ],
+    "correct_answer": "Microsoft Excel"
+  },
+  {
+    "question": "What role do people play in information systems?",
+    "variants": [
+      "They only maintain the hardware",
+      "They create and manage the systems",
+      "They write code exclusively",
+      "None; systems are fully automated"
+    ],
+    "correct_answer": "They create and manage the systems"
+  },
+  {
+    "question": "What is a process in the context of information systems?",
+    "variants": [
+      "Only a hardware configuration",
+      "A way to store data",
+      "A series of steps to achieve a goal",
+      "Communication software"
+    ],
+    "correct_answer": "A series of steps to achieve a goal"
+  },
+  {
+    "question": "Which of the following best describes an information system?",
+    "variants": [
+      "Only the software that runs on computers",
+      "A system designed for personal communication",
+      "A set of components that collect, process, store, and distribute data",
+      "A local area network"
+    ],
+    "correct_answer": "A set of components that collect, process, store, and distribute data"
+  },
+  {
+    "question": "In which decade did the mainframe era begin?",
+    "variants": [
+      "1970s",
+      "1950s",
+      "1980s",
+      "1990s"
+    ],
+    "correct_answer": "1950s"
+  },
+  {
+    "question": "What major company dominated the mainframe era?",
+    "variants": [
+      "Apple",
+      "Microsoft",
+      "SAP",
+      "IBM"
+    ],
+    "correct_answer": "IBM"
+  },
+  {
+    "question": "What did ERP systems primarily aim to do?",
+    "variants": [
+      "Replace email systems",
+      "Create websites",
+      "Integrate business processes into one software system",
+      "Improve operating systems"
+    ],
+    "correct_answer": "Integrate business processes into one software system"
+  },
+  {
+    "question": "What was the significance of the Altair 8800?",
+    "variants": [
+      "First operating system",
+      "First smartphone",
+      "Sparked the personal computer revolution",
+      "Created the Internet"
+    ],
+    "correct_answer": "Sparked the personal computer revolution"
+  },
+  {
+    "question": "What was one key outcome of the dot-com boom?",
+    "variants": [
+      "Elimination of email",
+      "Decline in hardware production",
+      "Worldwide installation of Internet infrastructure",
+      "Standardization of floppy disks"
+    ],
+    "correct_answer": "Worldwide installation of Internet infrastructure"
+  },
+  {
+    "question": "What is “Web 2.0”?",
+    "variants": [
+      "A faster version of the web",
+      "A static webpage style",
+      "An interactive, user-generated version of the web",
+      "A security system for websites"
+    ],
+    "correct_answer": "An interactive, user-generated version of the web"
+  },
+  {
+    "question": "What is \"disintermediation\"?",
+    "variants": [
+      "Using multiple software layers",
+      "Removing middlemen from a process via technology",
+      "The separation of data and logic",
+      "Converting analog signals to digital"
+    ],
+    "correct_answer": "Removing middlemen from a process via technology"
+  },
+  {
+    "question": "What is the “post-PC world”?",
+    "variants": [
+      "PCs are the only device used",
+      "Users rely more on tablets and smartphones",
+      "Mainframes are used more than PCs",
+      "Users must return to manual processes"
+    ],
+    "correct_answer": "Users rely more on tablets and smartphones"
+  },
+  {
+    "question": "What does cloud computing provide?",
+    "variants": [
+      "Faster processors",
+      "Enhanced virus protection",
+      "Remote storage, sharing, and backup",
+      "Local-only computing"
+    ],
+    "correct_answer": "Remote storage, sharing, and backup"
+  },
+  {
+    "question": "What is the main idea of Nicholas Carr’s article “IT Doesn’t Matter”?",
+    "variants": [
+      "IT always provides competitive advantage",
+      "IT is becoming a basic commodity",
+      "IT should be avoided",
+      "Only startups need IT"
+    ],
+    "correct_answer": "IT is becoming a basic commodity"
+  },
+  {
+    "question": "Which of the following companies was a pioneer in e-commerce?",
+    "variants": [
+      "IBM",
+      "SAP",
+      "eBay",
+      "Novell"
+    ],
+    "correct_answer": "eBay"
+  },
+  {
+    "question": "What is the main goal of modeling at the pre-design and design stages?",
+    "variants": [
+      "Testing software functionality",
+      "Reducing hardware costs",
+      "Analyzing the domain and preparing documentation",
+      "Training end-users"
+    ],
+    "correct_answer": "Analyzing the domain and preparing documentation"
+  },
+  {
+    "question": "What methodology is commonly used for structural analysis in IS design?",
+    "variants": [
+      "OWL",
+      "SADT",
+      "BPMN",
+      "SQL"
+    ],
+    "correct_answer": "SADT"
+  },
+  {
+    "question": "Which language is known for its use in software development documentation and code generation?",
+    "variants": [
+      "IDEF",
+      "ERD",
+      "UML",
+      "XML"
+    ],
+    "correct_answer": "UML"
+  },
+  {
+    "question": "What is the function of IDEF diagrams?",
+    "variants": [
+      "Define programming rules",
+      "Validate software code",
+      "Analyze business processes",
+      "Perform database queries"
+    ],
+    "correct_answer": "Analyze business processes"
+  },
+  {
+    "question": "What is one of the key disadvantages of traditional modeling methods?",
+    "variants": [
+      "High-speed implementation",
+      "Inability to cover all development stages",
+      "Overuse of case tools",
+      "Lack of business process focus"
+    ],
+    "correct_answer": "Inability to cover all development stages"
+  },
+  {
+    "question": "What is one of the aims of developing a new IS modeling methodology?",
+    "variants": [
+      "Increase diagram aesthetics",
+      "Enable consistent use across all project stages",
+      "Reduce the need for programming",
+      "Avoid use of UML"
+    ],
+    "correct_answer": "Enable consistent use across all project stages"
+  },
+  {
+    "question": "Why are hybrid models often used in IS modeling?",
+    "variants": [
+      "They are cheaper to create",
+      "They combine strengths of different methodologies",
+      "They reduce data storage",
+      "They only use visual languages"
+    ],
+    "correct_answer": "They combine strengths of different methodologies"
+  },
+  {
+    "question": "What kind of CASE tool is AllFusion ERwin Data Modeler?",
+    "variants": [
+      "Software testing platform",
+      "UI design toolkit",
+      "ER diagram modeling tool",
+      "Document converter"
+    ],
+    "correct_answer": "ER diagram modeling tool"
+  },
+  {
+    "question": "What does UML stand for?",
+    "variants": [
+      "Unified Manual Language",
+      "Universal Modeling Layer",
+      "Unified Modeling Language",
+      "Unstructured Modeling Logic"
+    ],
+    "correct_answer": "Unified Modeling Language"
+  },
+  {
+    "question": "Which diagram is considered a key component of UML?",
+    "variants": [
+      "ER Diagram",
+      "Class Diagram",
+      "Network Diagram",
+      "Flow Diagram"
+    ],
+    "correct_answer": "Class Diagram"
+  },
+  {
+    "question": "What is OCL in UML?",
+    "variants": [
+      "A declarative language to describe rules",
+      "Object comparison tool",
+      "Online coding layer",
+      "Operator control logic"
+    ],
+    "correct_answer": "A declarative language to describe rules"
+  },
+  {
+    "question": "Which statement is true about OCL and UML?",
+    "variants": [
+      "Both are graphical modeling languages",
+      "OCL is used for hardware programming",
+      "OCL has a linear notation unlike UML",
+      "UML has formal proof of theorems unlike OCL"
+    ],
+    "correct_answer": "OCL has a linear notation unlike UML"
+  },
+  {
+    "question": "What does the OWL language focus on?",
+    "variants": [
+      "Software interface building",
+      "Representing knowledge in the subject area",
+      "Creating GUIs",
+      "Generating SQL schemas"
+    ],
+    "correct_answer": "Representing knowledge in the subject area"
+  },
+  {
+    "question": "What is a key difference between UML and OWL?",
+    "variants": [
+      "UML assumes a closed world, OWL an open world",
+      "UML uses RDF for modeling",
+      "OWL includes database backups",
+      "UML is used for marketing systems"
+    ],
+    "correct_answer": "UML assumes a closed world, OWL an open world"
+  },
+  {
+    "question": "What is a characteristic of abstract classes in UML?",
+    "variants": [
+      "They are read-only classes",
+      "They represent static data",
+      "They cannot be instantiated",
+      "They override subclasses"
+    ],
+    "correct_answer": "They cannot be instantiated"
+  },
+  {
+    "question": "How can UML abstract classes be simulated in OWL?",
+    "variants": [
+      "Using class visibility modifiers",
+      "Assigning multiple stereotypes",
+      "Using Disjoint Union",
+      "Declaring read-only attributes"
+    ],
+    "correct_answer": "Using Disjoint Union"
+  },
+  {
+    "question": "What is a limitation of OWL compared to UML?",
+    "variants": [
+      "OWL lacks graphical tools",
+      "OWL cannot define relationships",
+      "OWL lacks access control features",
+      "OWL does not support knowledge representation"
+    ],
+    "correct_answer": "OWL lacks access control features"
+  },
+  {
+    "question": "What does the Ontology Definition Metamodel (ODM) provide?",
+    "variants": [
+      "Diagram design templates",
+      "UML profiles for representing OWL and RDF",
+      "Software installation scripts",
+      "Process optimization rules"
+    ],
+    "correct_answer": "UML profiles for representing OWL and RDF"
+  },
+  {
+    "question": "What is the purpose of semantic mapping between UML and OWL?",
+    "variants": [
+      "Translate SQL queries",
+      "Create business rules",
+      "Enable verification and validation",
+      "Build user interfaces"
+    ],
+    "correct_answer": "Enable verification and validation"
+  },
+  {
+    "question": "Why is it difficult to map UML to OWL directly?",
+    "variants": [
+      "UML lacks visual elements",
+      "OWL uses outdated syntax",
+      "UML cannot describe software logic",
+      "UML and OWL have conceptual differences"
+    ],
+    "correct_answer": "UML and OWL have conceptual differences"
+  },
+  {
+    "question": "What does UML stand for?",
+    "variants": [
+      "Unified Modeling Language",
+      "Universal Mapping Logic",
+      "User Modeling Language",
+      "Unified Machine Logic"
+    ],
+    "correct_answer": "Unified Modeling Language"
+  },
+  {
+    "question": "What is UML mainly used for?",
+    "variants": [
+      "Writing program code",
+      "Managing databases",
+      "Designing and visualizing systems",
+      "Compiling source code"
+    ],
+    "correct_answer": "Designing and visualizing systems"
+  },
+  {
+    "question": "Which of the following best describes UML?",
+    "variants": [
+      "A database management tool",
+      "A graphical modeling language",
+      "A text-based programming language",
+      "A cloud storage solution"
+    ],
+    "correct_answer": "A graphical modeling language"
+  },
+  {
+    "question": "In which field is UML most commonly used?",
+    "variants": [
+      "Construction engineering",
+      "Digital art",
+      "Marketing",
+      "Information Technology (IT)"
+    ],
+    "correct_answer": "Information Technology (IT)"
+  },
+  {
+    "question": "Which UML feature allows automatic generation of source code?",
+    "variants": [
+      "Class properties",
+      "Object-oriented structure",
+      "Label styling",
+      "Network protocols"
+    ],
+    "correct_answer": "Object-oriented structure"
+  },
+  {
+    "question": "What kind of relationships can UML depict?",
+    "variants": [
+      "Inheritance and dependencies",
+      "Keyboard shortcuts",
+      "Server architecture only",
+      "Only user permissions"
+    ],
+    "correct_answer": "Inheritance and dependencies"
+  },
+  {
+    "question": "What are UML diagrams made of?",
+    "variants": [
+      "Only text and colors",
+      "Database queries",
+      "Shapes, icons, labels, lines, and contours",
+      "Operating system commands"
+    ],
+    "correct_answer": "Shapes, icons, labels, lines, and contours"
+  },
+  {
+    "question": "What is reverse engineering in UML?",
+    "variants": [
+      "Translating diagrams into text",
+      "Drawing diagrams by hand",
+      "Generating diagrams from existing code",
+      "Building UML for marketing"
+    ],
+    "correct_answer": "Generating diagrams from existing code"
+  },
+  {
+    "question": "What kind of approach does UML support?",
+    "variants": [
+      "Functional",
+      "Linear",
+      "Object-oriented",
+      "Command-driven"
+    ],
+    "correct_answer": "Object-oriented"
+  },
+  {
+    "question": "What does a UML class diagram typically show?",
+    "variants": [
+      "Hardware connections",
+      "Relationships between classes and objects",
+      "Marketing data",
+      "Business profits"
+    ],
+    "correct_answer": "Relationships between classes and objects"
+  },
+  {
+    "question": "What are the three main types of UML diagrams?",
+    "variants": [
+      "Logical, temporal, spatial",
+      "Visual, tabular, numeric",
+      "Structural, behavioral, functional",
+      "Networked, isolated, linked"
+    ],
+    "correct_answer": "Structural, behavioral, functional"
+  },
+  {
+    "question": "What do structural diagrams describe?",
+    "variants": [
+      "Workflow errors",
+      "Algorithm performance",
+      "Static structure of a system",
+      "Internet speed"
+    ],
+    "correct_answer": "Static structure of a system"
+  },
+  {
+    "question": "What do behavioral diagrams describe?",
+    "variants": [
+      "Server setups",
+      "Database schema",
+      "System behavior over time",
+      "Program interfaces only"
+    ],
+    "correct_answer": "System behavior over time"
+  },
+  {
+    "question": "What is a functional UML diagram for?",
+    "variants": [
+      "Showing only object properties",
+      "Indicating code complexity",
+      "Visualizing physical devices",
+      "Describing system functions for users"
+    ],
+    "correct_answer": "Describing system functions for users"
+  },
+  {
+    "question": "What makes UML standardized?",
+    "variants": [
+      "All diagrams must be in color",
+      "Same symbols mean the same things across diagrams",
+      "It works only with XML",
+      "It requires Microsoft Office"
+    ],
+    "correct_answer": "Same symbols mean the same things across diagrams"
+  },
+  {
+    "question": "What is one benefit of using UML?",
+    "variants": [
+      "Better visualization of complex systems",
+      "Faster internet connection",
+      "Lower memory consumption",
+      "Built-in encryption"
+    ],
+    "correct_answer": "Better visualization of complex systems"
+  },
+  {
+    "question": "How does UML support communication?",
+    "variants": [
+      "Through emails",
+      "Only with diagrams.net",
+      "By making concepts easier to understand visually",
+      "Using text documents only"
+    ],
+    "correct_answer": "By making concepts easier to understand visually"
+  },
+  {
+    "question": "What is reverse engineering useful for?",
+    "variants": [
+      "Updating firmware",
+      "Understanding undocumented systems",
+      "Translating apps",
+      "Editing spreadsheets"
+    ],
+    "correct_answer": "Understanding undocumented systems"
+  },
+  {
+    "question": "What is one major criticism of UML?",
+    "variants": [
+      "Lack of any documentation",
+      "Limited application area",
+      "Redundancy and unused entities",
+      "Too few diagram options"
+    ],
+    "correct_answer": "Redundancy and unused entities"
+  },
+  {
+    "question": "What is a challenge for new UML users?",
+    "variants": [
+      "Learning many notations",
+      "Lack of online resources",
+      "Poor integration with code",
+      "High hardware requirements"
+    ],
+    "correct_answer": "Learning many notations"
+  },
+  {
+    "question": "When is learning many UML notations unnecessary?",
+    "variants": [
+      "While writing pseudocode",
+      "When diagrams are generated automatically",
+      "When creating HTML pages",
+      "When using spreadsheets"
+    ],
+    "correct_answer": "When diagrams are generated automatically"
+  },
+  {
+    "question": "What is the main purpose of UML contours?",
+    "variants": [
+      "Set color themes",
+      "Translate diagrams",
+      "Contain concepts and their connections",
+      "Resize images"
+    ],
+    "correct_answer": "Contain concepts and their connections"
+  },
+  {
+    "question": "What do UML labels do?",
+    "variants": [
+      "Create network graphs",
+      "Sort files",
+      "Run simulations",
+      "Name entities and provide descriptions"
+    ],
+    "correct_answer": "Name entities and provide descriptions"
+  },
+  {
+    "question": "What do UML lines indicate?",
+    "variants": [
+      "Font settings",
+      "Storage paths",
+      "Relationships and dependencies",
+      "Code compilation steps"
+    ],
+    "correct_answer": "Relationships and dependencies"
+  },
+  {
+    "question": "What does visibility mean in UML?",
+    "variants": [
+      "Color intensity of elements",
+      "Diagram export options",
+      "Zoom level",
+      "Access level to model elements"
+    ],
+    "correct_answer": "Access level to model elements"
+  },
+  {
+    "question": "What is diagrams.net used for in UML?",
+    "variants": [
+      "Testing security flaws",
+      "Manually drawing UML diagrams",
+      "Writing database queries",
+      "Measuring traffic speed"
+    ],
+    "correct_answer": "Manually drawing UML diagrams"
+  },
+  {
+    "question": "What do modules and libraries allow in UML?",
+    "variants": [
+      "Internet browsing",
+      "Diagram creation from code",
+      "Audio recording",
+      "Web scraping"
+    ],
+    "correct_answer": "Diagram creation from code"
+  },
+  {
+    "question": "How can UML be integrated in programming?",
+    "variants": [
+      "By installing browser plugins",
+      "Using spreadsheet formulas",
+      "Through IDE modules and libraries",
+      "By adjusting screen resolution"
+    ],
+    "correct_answer": "Through IDE modules and libraries"
+  },
+  {
+    "question": "What is a visual benefit of UML?",
+    "variants": [
+      "Faster CPU performance",
+      "Color-coded source code",
+      "Clearer understanding of structure than text",
+      "Reduced electricity consumption"
+    ],
+    "correct_answer": "Clearer understanding of structure than text"
+  },
+  {
+    "question": "In what non-IT field can UML still be useful?",
+    "variants": [
+      "Space missions only",
+      "Musical composition",
+      "Business process design",
+      "Gardening layouts"
+    ],
+    "correct_answer": "Business process design"
+  },
+  {
+    "question": "What is a database system?",
+    "variants": [
+      "A structured collection of data for efficient storage and retrieval",
+      "A text editor for programming",
+      "A method for organizing lectures",
+      "A type of spreadsheet software"
+    ],
+    "correct_answer": "A structured collection of data for efficient storage and retrieval"
+  },
+  {
+    "question": "Which of the following is NOT a component of a database system?",
+    "variants": [
+      "Data",
+      "Hardware",
+      "Network router",
+      "Software"
+    ],
+    "correct_answer": "Network router"
+  },
+  {
+    "question": "What are the main functions of a database system?",
+    "variants": [
+      "Print, send, encrypt",
+      "Store, update, retrieve, organize, protect data",
+      "Backup, reinstall, recover",
+      "Compile, debug, export"
+    ],
+    "correct_answer": "Store, update, retrieve, organize, protect data"
+  },
+  {
+    "question": "What model stores data in tables with relationships?",
+    "variants": [
+      "Graph database model",
+      "Relational model",
+      "Object-oriented model",
+      "File system model"
+    ],
+    "correct_answer": "Relational model"
+  },
+  {
+    "question": "What do columns in a relational table represent?",
+    "variants": [
+      "Records",
+      "Tables",
+      "Attributes",
+      "Relationships"
+    ],
+    "correct_answer": "Attributes"
+  },
+  {
+    "question": "What do rows in a relational table represent?",
+    "variants": [
+      "Attributes",
+      "Records",
+      "Foreign keys",
+      "Queries"
+    ],
+    "correct_answer": "Records"
+  },
+  {
+    "question": "Which of the following is an advantage of the relational model?",
+    "variants": [
+      "It enforces data integrity through constraints",
+      "It requires no software",
+      "It is only used in small businesses",
+      "It stores data in one long list"
+    ],
+    "correct_answer": "It enforces data integrity through constraints"
+  },
+  {
+    "question": "What is DBMS?",
+    "variants": [
+      "Software that manages databases",
+      "A programming language",
+      "A hardware device",
+      "A type of table"
+    ],
+    "correct_answer": "Software that manages databases"
+  },
+  {
+    "question": "Which user writes programs that allow others to use databases?",
+    "variants": [
+      "Database administrator",
+      "End user",
+      "Application developer",
+      "Systems analyst"
+    ],
+    "correct_answer": "Application developer"
+  },
+  {
+    "question": "Who is responsible for designing and managing the database?",
+    "variants": [
+      "Database administrator",
+      "Network technician",
+      "Security officer",
+      "End user"
+    ],
+    "correct_answer": "Database administrator"
+  },
+  {
+    "question": "Which is NOT an example of a DBMS?",
+    "variants": [
+      "MySQL",
+      "Python",
+      "Oracle",
+      "PostgreSQL"
+    ],
+    "correct_answer": "Python"
+  },
+  {
+    "question": "What does the Data Definition Language (DDL) do?",
+    "variants": [
+      "Defines database schema",
+      "Encrypts user passwords",
+      "Backs up data",
+      "Creates user interfaces"
+    ],
+    "correct_answer": "Defines database schema"
+  },
+  {
+    "question": "What is stored in the data dictionary?",
+    "variants": [
+      "User login credentials",
+      "Backup logs",
+      "Metadata about database structure",
+      "Application source code"
+    ],
+    "correct_answer": "Metadata about database structure"
+  },
+  {
+    "question": "What uniquely identifies each record in a relational table?",
+    "variants": [
+      "Foreign key",
+      "Attribute",
+      "Primary key",
+      "Index"
+    ],
+    "correct_answer": "Primary key"
+  },
+  {
+    "question": "What is DML?",
+    "variants": [
+      "Design Mapping Language",
+      "Data Manipulation Language",
+      "Database Migration Layer",
+      "Device Management Logic"
+    ],
+    "correct_answer": "Data Manipulation Language"
+  },
+  {
+    "question": "Which of the following is a commercial DML?",
+    "variants": [
+      "Relational calculus",
+      "SQL",
+      "Assembly",
+      "DDL"
+    ],
+    "correct_answer": "SQL"
+  },
+  {
+    "question": "What does DCL stand for?",
+    "variants": [
+      "Direct Code Linker",
+      "Data Control Language",
+      "Distributed Connection Layer",
+      "Domain Constraint Logic"
+    ],
+    "correct_answer": "Data Control Language"
+  },
+  {
+    "question": "Which command is used in DCL to give access?",
+    "variants": [
+      "DENY",
+      "ADD",
+      "GRANT",
+      "INSERT"
+    ],
+    "correct_answer": "GRANT"
+  },
+  {
+    "question": "Which command removes user access in DCL?",
+    "variants": [
+      "REMOVE",
+      "DELETE",
+      "REVOKE",
+      "DENY"
+    ],
+    "correct_answer": "REVOKE"
+  },
+  {
+    "question": "What is a key role of the DBMS?",
+    "variants": [
+      "Acts as an intermediary between users and data",
+      "Designs operating systems",
+      "Sends emails",
+      "Writes applications"
+    ],
+    "correct_answer": "Acts as an intermediary between users and data"
+  },
+  {
+    "question": "What type of database supports only one user at a time?",
+    "variants": [
+      "Single-user database",
+      "Workgroup database",
+      "Distributed database",
+      "Enterprise database"
+    ],
+    "correct_answer": "Single-user database"
+  },
+  {
+    "question": "Which database type supports many users and departments?",
+    "variants": [
+      "Desktop database",
+      "Workgroup database",
+      "Enterprise database",
+      "Personal file system"
+    ],
+    "correct_answer": "Enterprise database"
+  },
+  {
+    "question": "Where is data located in a centralized database?",
+    "variants": [
+      "At a single site",
+      "On every user’s PC",
+      "Randomly on the web",
+      "In the cloud only"
+    ],
+    "correct_answer": "At a single site"
+  },
+  {
+    "question": "What is a cloud database?",
+    "variants": [
+      "A paper-based filing system",
+      "A database hosted using cloud data services",
+      "A data archive on DVDs",
+      "A local-only data folder"
+    ],
+    "correct_answer": "A database hosted using cloud data services"
+  },
+  {
+    "question": "What is an operational database used for?",
+    "variants": [
+      "Supporting daily business activities",
+      "Backing up email accounts",
+      "Hosting websites",
+      "Designing websites"
+    ],
+    "correct_answer": "Supporting daily business activities"
+  },
+  {
+    "question": "What does OLAP stand for?",
+    "variants": [
+      "Online Analytical Processing",
+      "Object Linking Application Platform",
+      "Open Loop Authentication Protocol",
+      "Operating Layer Access Program"
+    ],
+    "correct_answer": "Online Analytical Processing"
+  },
+  {
+    "question": "What type of data is in its original, unprocessed form?",
+    "variants": [
+      "Structured data",
+      "Semistructured data",
+      "Unstructured data",
+      "Meta data"
+    ],
+    "correct_answer": "Unstructured data"
+  },
+  {
+    "question": "What is XML used for in databases?",
+    "variants": [
+      "Sorting hardware data",
+      "Representing data elements in text format",
+      "Encrypting database schema",
+      "Replacing relational tables"
+    ],
+    "correct_answer": "Representing data elements in text format"
+  },
+  {
+    "question": "What does better data quality promote?",
+    "variants": [
+      "Slower decision making",
+      "Data inconsistency",
+      "Accuracy, validity, timeliness",
+      "Manual storage"
+    ],
+    "correct_answer": "Accuracy, validity, timeliness"
+  },
+  {
+    "question": "What does ADO stand for?",
+    "variants": [
+      "Active Design Optimization",
+      "ActiveX Data Objects",
+      "Automated Data Operations",
+      "Adaptive Database Output"
+    ],
+    "correct_answer": "ActiveX Data Objects"
+  },
+  {
+    "question": "What is the primary purpose of ADO?",
+    "variants": [
+      "Encrypting documents",
+      "Accessing and manipulating data from various sources",
+      "Managing cloud infrastructure",
+      "Designing user interfaces"
+    ],
+    "correct_answer": "Accessing and manipulating data from various sources"
+  },
+  {
+    "question": "ADO provides access to which types of data sources?",
+    "variants": [
+      "Databases, spreadsheets, text files",
+      "Audio files, video streams, HTML pages",
+      "ZIP archives, PDFs, EXEs",
+      "RAM and CPU settings"
+    ],
+    "correct_answer": "Databases, spreadsheets, text files"
+  },
+  {
+    "question": "What is one key advantage of ADO?",
+    "variants": [
+      "Requires no coding skills",
+      "Unified programming model for accessing different data sources",
+      "Only works with Microsoft Access",
+      "Works only online"
+    ],
+    "correct_answer": "Unified programming model for accessing different data sources"
+  },
+  {
+    "question": "What does connected mode in ADO mean?",
+    "variants": [
+      "Uses Wi-Fi connection",
+      "Sends data via email",
+      "Maintains a live connection to the data source",
+      "Transfers data through USB"
+    ],
+    "correct_answer": "Maintains a live connection to the data source"
+  },
+  {
+    "question": "What is disconnected mode in ADO?",
+    "variants": [
+      "File is saved in CSV",
+      "Remote access is blocked",
+      "Data is stored in memory without a continuous connection",
+      "Data is lost after use"
+    ],
+    "correct_answer": "Data is stored in memory without a continuous connection"
+  },
+  {
+    "question": "Which operations does ADO support?",
+    "variants": [
+      "Compiling and linking",
+      "Querying, updating, inserting, deleting",
+      "File editing and compression",
+      "Encryption and hashing"
+    ],
+    "correct_answer": "Querying, updating, inserting, deleting"
+  },
+  {
+    "question": "Where is ADO commonly used?",
+    "variants": [
+      "Desktop, web, and mobile applications",
+      "Operating system design",
+      "Game development only",
+      "Graphic rendering systems"
+    ],
+    "correct_answer": "Desktop, web, and mobile applications"
+  },
+  {
+    "question": "What industries benefit from ADO’s data capabilities?",
+    "variants": [
+      "Agriculture and Mining",
+      "Fintech and Healthtech",
+      "Sports and Music",
+      "Automotive and Fashion"
+    ],
+    "correct_answer": "Fintech and Healthtech"
+  },
+  {
+    "question": "What is software development methodology?",
+    "variants": [
+      "Network configuration technique",
+      "Software purchase method",
+      "Framework for planning and managing software projects",
+      "Internet browsing guideline"
+    ],
+    "correct_answer": "Framework for planning and managing software projects"
+  },
+  {
+    "question": "What is SDLC?",
+    "variants": [
+      "Software Design Layout Code",
+      "Software Development Life Cycle",
+      "Secure Data Logging Center",
+      "Software Data Load Cycle"
+    ],
+    "correct_answer": "Software Development Life Cycle"
+  },
+  {
+    "question": "What is a primary goal of SDLC?",
+    "variants": [
+      "Launch new hardware",
+      "Deliver high-quality software cost-effectively",
+      "Manage cloud platforms",
+      "Create social media campaigns"
+    ],
+    "correct_answer": "Deliver high-quality software cost-effectively"
+  },
+  {
+    "question": "Which phase comes first in SDLC?",
+    "variants": [
+      "Planning & Analysis",
+      "Development",
+      "Testing",
+      "Deployment"
+    ],
+    "correct_answer": "Planning & Analysis"
+  },
+  {
+    "question": "What happens in the ‘Define Requirements’ phase?",
+    "variants": [
+      "Documents like SRS and Use Cases are created",
+      "Only code is written",
+      "Users test the software",
+      "UI design begins"
+    ],
+    "correct_answer": "Documents like SRS and Use Cases are created"
+  },
+  {
+    "question": "What is the outcome of the design phase?",
+    "variants": [
+      "Full working software",
+      "Software design document (SDD)",
+      "Bug reports",
+      "Marketing strategy"
+    ],
+    "correct_answer": "Software design document (SDD)"
+  },
+  {
+    "question": "What is created during the development phase?",
+    "variants": [
+      "Cloud configurations",
+      "User feedback reports",
+      "Working software modules",
+      "Installation guides"
+    ],
+    "correct_answer": "Working software modules"
+  },
+  {
+    "question": "Why is testing important in SDLC?",
+    "variants": [
+      "To change the project plan",
+      "To save money only",
+      "To ensure the software functions properly",
+      "To build prototypes"
+    ],
+    "correct_answer": "To ensure the software functions properly"
+  },
+  {
+    "question": "What does unit testing involve?",
+    "variants": [
+      "Testing individual software components",
+      "Testing databases only",
+      "Updating user accounts",
+      "Documenting UI colors"
+    ],
+    "correct_answer": "Testing individual software components"
+  },
+  {
+    "question": "What is acceptance testing?",
+    "variants": [
+      "Developer code review",
+      "Alpha phase bug listing",
+      "Server setup verification",
+      "Final validation by end users"
+    ],
+    "correct_answer": "Final validation by end users"
+  },
+  {
+    "question": "What is deployment in SDLC?",
+    "variants": [
+      "Writing the first draft of the plan",
+      "Creating documentation",
+      "Delivering the final product to users",
+      "Encrypting the software"
+    ],
+    "correct_answer": "Delivering the final product to users"
+  },
+  {
+    "question": "What is the purpose of the maintenance phase?",
+    "variants": [
+      "Fix bugs and improve software after release",
+      "End the development process permanently",
+      "Remove the software from servers",
+      "Block user access"
+    ],
+    "correct_answer": "Fix bugs and improve software after release"
+  },
+  {
+    "question": "Which SDLC model is flexible and iterative?",
+    "variants": [
+      "Waterfall model",
+      "Agile model",
+      "Big Bang model",
+      "Monolithic model"
+    ],
+    "correct_answer": "Agile model"
+  },
+  {
+    "question": "What is a key feature of the Agile model?",
+    "variants": [
+      "Short iterations with customer feedback",
+      "No documentation required",
+      "No testing needed",
+      "It only applies to startups"
+    ],
+    "correct_answer": "Short iterations with customer feedback"
+  },
+  {
+    "question": "What defines the Waterfall model?",
+    "variants": [
+      "Ongoing feedback cycles",
+      "Cyclical revisiting of phases",
+      "Linear and sequential steps",
+      "Cloud-based only"
+    ],
+    "correct_answer": "Linear and sequential steps"
+  },
+  {
+    "question": "What is the Iterative model best for?",
+    "variants": [
+      "Projects needing high flexibility",
+      "Projects without a deadline",
+      "Single-screen apps",
+      "One-time-only projects"
+    ],
+    "correct_answer": "Projects needing high flexibility"
+  },
+  {
+    "question": "What is the focus of the Spiral model?",
+    "variants": [
+      "Speed and low cost",
+      "Risk analysis and complex project handling",
+      "Building games",
+      "No planning required"
+    ],
+    "correct_answer": "Risk analysis and complex project handling"
+  },
+  {
+    "question": "What characterizes the Big Bang model?",
+    "variants": [
+      "Careful requirement planning",
+      "Minimal planning, coding starts immediately",
+      "Large team structures",
+      "Predefined customer contracts"
+    ],
+    "correct_answer": "Minimal planning, coding starts immediately"
+  },
+  {
+    "question": "Which document defines all the system's behaviors and architecture?",
+    "variants": [
+      "Software Design Document (SDD)",
+      "End-user license agreement",
+      "System BIOS manual",
+      "Marketing Brochure"
+    ],
+    "correct_answer": "Software Design Document (SDD)"
+  },
+  {
+    "question": "What type of testing is done to assess speed and scalability?",
+    "variants": [
+      "Performance testing",
+      "Usability testing",
+      "Acceptance testing",
+      "Functional testing"
+    ],
+    "correct_answer": "Performance testing"
+  },
+  {
+    "question": "What testing evaluates the UI and user interaction?",
+    "variants": [
+      "Unit testing",
+      "Usability testing",
+      "Load testing",
+      "Vulnerability testing"
+    ],
+    "correct_answer": "Usability testing"
+  },
+  {
+    "question": "What is the purpose of a prototype?",
+    "variants": [
+      "Visualize and test design ideas before full coding",
+      "Replace production software",
+      "Encrypt project files",
+      "Test server hardware"
+    ],
+    "correct_answer": "Visualize and test design ideas before full coding"
+  },
+  {
+    "question": "What document tracks which requirements are implemented?",
+    "variants": [
+      "User manual",
+      "Requirement Traceability Matrix",
+      "Error log",
+      "SQL schema"
+    ],
+    "correct_answer": "Requirement Traceability Matrix"
+  },
+  {
+    "question": "What is a use case document used for?",
+    "variants": [
+      "List all possible errors",
+      "Define the UI layout",
+      "Identify required hardware",
+      "Describe how users will interact with the system"
+    ],
+    "correct_answer": "Describe how users will interact with the system"
+  },
+  {
+    "question": "What is a benefit of disconnected data access in ADO?",
+    "variants": [
+      "Requires constant internet access",
+      "Slows down performance",
+      "Reduces load on the database and increases scalability",
+      "Deletes data automatically"
+    ],
+    "correct_answer": "Reduces load on the database and increases scalability"
+  },
+  {
+    "question": "Which feature allows developers to work with multiple data types in ADO?",
+    "variants": [
+      "Scripting module",
+      "Database linker",
+      "Flexibility in data handling",
+      "Visual Designer"
+    ],
+    "correct_answer": "Flexibility in data handling"
+  },
+  {
+    "question": "What does transactional support in ADO provide?",
+    "variants": [
+      "Ability to perform atomic operations",
+      "Only read-only access",
+      "Code optimization",
+      "Server reset control"
+    ],
+    "correct_answer": "Ability to perform atomic operations"
+  },
+  {
+    "question": "In what case is ADO especially helpful in analytics?",
+    "variants": [
+      "Predicting weather",
+      "Market dynamics of IT products",
+      "Developing video games",
+      "Creating graphic design"
+    ],
+    "correct_answer": "Market dynamics of IT products"
+  },
+  {
+    "question": "Why is ADO useful in fintech and healthtech?",
+    "variants": [
+      "Provides antivirus tools",
+      "Offers AI analysis",
+      "Allows flexible and secure access to data",
+      "Generates patient reports automatically"
+    ],
+    "correct_answer": "Allows flexible and secure access to data"
+  },
+  {
+    "question": "What does the SDLC provide for the product team?",
+    "variants": [
+      "Elimination of QA process",
+      "Systematic development with clear goals",
+      "Cloud hosting setup",
+      "Graphic user interface"
+    ],
+    "correct_answer": "Systematic development with clear goals"
+  },
+  {
+    "question": "What is the purpose of feature prioritization frameworks?",
+    "variants": [
+      "Help decide what features to build first",
+      "Increase database performance",
+      "Reduce software size",
+      "Convert diagrams to code"
+    ],
+    "correct_answer": "Help decide what features to build first"
+  },
+  {
+    "question": "What document is produced during the requirements phase?",
+    "variants": [
+      "Software Requirements Specification (SRS)",
+      "Software Bill of Materials (SBOM)",
+      "Database map",
+      "Source control logs"
+    ],
+    "correct_answer": "Software Requirements Specification (SRS)"
+  },
+  {
+    "question": "What happens during system design?",
+    "variants": [
+      "Customer onboarding",
+      "App store upload",
+      "Visual and functional planning of the product",
+      "Legal compliance review"
+    ],
+    "correct_answer": "Visual and functional planning of the product"
+  },
+  {
+    "question": "What is functional testing?",
+    "variants": [
+      "Tests the company’s network",
+      "Analyzes hardware limitations",
+      "Verifies software functions as intended",
+      "Measures download speed"
+    ],
+    "correct_answer": "Verifies software functions as intended"
+  },
+  {
+    "question": "What is security testing?",
+    "variants": [
+      "Confirms file naming is correct",
+      "Identifies vulnerabilities in the system",
+      "Compresses files",
+      "Generates UI colors"
+    ],
+    "correct_answer": "Identifies vulnerabilities in the system"
+  },
+  {
+    "question": "When is acceptance testing typically done?",
+    "variants": [
+      "During design",
+      "At the planning stage",
+      "Before final release to users",
+      "After retirement of product"
+    ],
+    "correct_answer": "Before final release to users"
+  },
+  {
+    "question": "What is the goal of the deployment phase?",
+    "variants": [
+      "Train employees",
+      "Run usability surveys",
+      "Release the software to the user base",
+      "Translate documentation"
+    ],
+    "correct_answer": "Release the software to the user base"
+  },
+  {
+    "question": "In Agile, how long is an iteration typically?",
+    "variants": [
+      "1–2 days",
+      "4–5 weeks",
+      "1–3 weeks",
+      "3–6 months"
+    ],
+    "correct_answer": "1–3 weeks"
+  },
+  {
+    "question": "Which model allows you to start coding without a defined plan?",
+    "variants": [
+      "Spiral model",
+      "Agile",
+      "Big Bang model",
+      "Waterfall"
+    ],
+    "correct_answer": "Big Bang model"
+  },
+  {
+    "question": "Why can the spiral model be expensive for small projects?",
+    "variants": [
+      "It requires cloud computing",
+      "It uses outdated technology",
+      "It focuses heavily on risk analysis",
+      "It excludes testing"
+    ],
+    "correct_answer": "It focuses heavily on risk analysis"
+  },
+  {
+    "question": "What is one drawback of the iterative model?",
+    "variants": [
+      "It uses old programming languages",
+      "Repeated cycles can lead to scope creep",
+      "It doesn’t allow prototypes",
+      "It doesn’t use testing"
+    ],
+    "correct_answer": "Repeated cycles can lead to scope creep"
+  },
+  {
+    "question": "What type of software might skip the SDLC and use the Big Bang model?",
+    "variants": [
+      "Enterprise applications",
+      "Financial reporting systems",
+      "Small experimental apps",
+      "Government tax systems"
+    ],
+    "correct_answer": "Small experimental apps"
+  },
+  {
+    "question": "What is the role of acceptance testing?",
+    "variants": [
+      "Test internal memory",
+      "Check server speeds",
+      "Validate if software meets end-user expectations",
+      "Delete unused code"
+    ],
+    "correct_answer": "Validate if software meets end-user expectations"
+  },
+  {
+    "question": "What is one benefit of generating documentation from UML or ADO-based systems?",
+    "variants": [
+      "Automation reduces human error",
+      "Manual review is faster",
+      "It allows real-time video output",
+      "It replaces the design team"
+    ],
+    "correct_answer": "Automation reduces human error"
+  },
+  {
+    "question": "What is system testing?",
+    "variants": [
+      "Testing user interface only",
+      "Unit testing of code modules",
+      "Evaluating how components interact in a full application",
+      "Beta testing by end-users"
+    ],
+    "correct_answer": "Evaluating how components interact in a full application"
+  },
+  {
+    "question": "When is system testing typically performed?",
+    "variants": [
+      "Before unit testing",
+      "After acceptance testing",
+      "After integration testing and before acceptance testing",
+      "During coding phase"
+    ],
+    "correct_answer": "After integration testing and before acceptance testing"
+  },
+  {
+    "question": "What is the purpose of system testing?",
+    "variants": [
+      "Creating project budget",
+      "Ensuring the system works as a unified whole",
+      "Training developers",
+      "Fixing servers"
+    ],
+    "correct_answer": "Ensuring the system works as a unified whole"
+  },
+  {
+    "question": "Why is system testing important in interconnected systems?",
+    "variants": [
+      "It speeds up release dates",
+      "Defects can cause complications for users",
+      "It reduces development time",
+      "It simplifies UI design"
+    ],
+    "correct_answer": "Defects can cause complications for users"
+  },
+  {
+    "question": "What does a test case represent in system testing?",
+    "variants": [
+      "Programming logic",
+      "Final product release",
+      "Crucial requirement or user story",
+      "User manual"
+    ],
+    "correct_answer": "Crucial requirement or user story"
+  },
+  {
+    "question": "One benefit of system testing is:",
+    "variants": [
+      "Improved product quality",
+      "Increased file size",
+      "Faster marketing campaign",
+      "Longer project deadlines"
+    ],
+    "correct_answer": "Improved product quality"
+  },
+  {
+    "question": "How does system testing contribute to error reduction?",
+    "variants": [
+      "Catches bugs missed in earlier testing",
+      "Reduces developer workload",
+      "Removes documentation",
+      "Automates client emails"
+    ],
+    "correct_answer": "Catches bugs missed in earlier testing"
+  },
+  {
+    "question": "Why is system testing cost-effective?",
+    "variants": [
+      "It reduces advertising cost",
+      "It's free software",
+      "Fixing bugs early prevents delays and budget overruns",
+      "It bypasses QA teams"
+    ],
+    "correct_answer": "Fixing bugs early prevents delays and budget overruns"
+  },
+  {
+    "question": "How does system testing improve security?",
+    "variants": [
+      "By encrypting all files",
+      "Identifies potential vulnerabilities",
+      "Updates antivirus software",
+      "Stores data on paper"
+    ],
+    "correct_answer": "Identifies potential vulnerabilities"
+  },
+  {
+    "question": "What role does system testing play in customer satisfaction?",
+    "variants": [
+      "Speeds up delivery",
+      "Adds animations to UI",
+      "Increases confidence and user experience",
+      "Reduces login steps"
+    ],
+    "correct_answer": "Increases confidence and user experience"
+  },
+  {
+    "question": "How does system testing assist developers?",
+    "variants": [
+      "Provides client feedback",
+      "Replaces code editors",
+      "Adds social media features",
+      "Makes code modification easier during development"
+    ],
+    "correct_answer": "Makes code modification easier during development"
+  },
+  {
+    "question": "What is checked in performance testing during system testing?",
+    "variants": [
+      "User feedback",
+      "Programming language",
+      "Memory usage, CPU, and latency",
+      "Font and design"
+    ],
+    "correct_answer": "Memory usage, CPU, and latency"
+  },
+  {
+    "question": "What is functional system testing?",
+    "variants": [
+      "Ensures system meets functional requirements",
+      "Measures battery life",
+      "Applies style sheets",
+      "Creates backups"
+    ],
+    "correct_answer": "Ensures system meets functional requirements"
+  },
+  {
+    "question": "What is one phase of system testing?",
+    "variants": [
+      "Test environment setup",
+      "Product advertisement",
+      "Price negotiation",
+      "Web traffic tracking"
+    ],
+    "correct_answer": "Test environment setup"
+  },
+  {
+    "question": "What is the purpose of the test case stage?",
+    "variants": [
+      "Review test reports",
+      "Hire new QA members",
+      "Generate specific cases to evaluate",
+      "Analyze financial return"
+    ],
+    "correct_answer": "Generate specific cases to evaluate"
+  },
+  {
+    "question": "What happens during the test data phase?",
+    "variants": [
+      "System is deployed",
+      "Tests are deleted",
+      "UI is finalized",
+      "Data for the tests is created"
+    ],
+    "correct_answer": "Data for the tests is created"
+  },
+  {
+    "question": "What is test case execution?",
+    "variants": [
+      "Running predefined tests",
+      "Deleting defects",
+      "Reporting code coverage",
+      "Restarting the server"
+    ],
+    "correct_answer": "Running predefined tests"
+  },
+  {
+    "question": "What happens in the defect reporting stage?",
+    "variants": [
+      "Errors are identified and logged",
+      "Hardware is updated",
+      "Legal issues are discussed",
+      "Customer contracts are signed"
+    ],
+    "correct_answer": "Errors are identified and logged"
+  },
+  {
+    "question": "What is the goal of regression testing?",
+    "variants": [
+      "Review marketing results",
+      "Remove customer data",
+      "Check if new changes introduced new issues",
+      "Add more features"
+    ],
+    "correct_answer": "Check if new changes introduced new issues"
+  },
+  {
+    "question": "What is the retest stage for?",
+    "variants": [
+      "File exporting",
+      "Repeating a failed test",
+      "Code cleanup",
+      "Hardware installation"
+    ],
+    "correct_answer": "Repeating a failed test"
+  },
+  {
+    "question": "What are commercial system testing tools?",
+    "variants": [
+      "Free text editors",
+      "Paid tools like Squish and SpiraTest",
+      "Antivirus software",
+      "Email tools"
+    ],
+    "correct_answer": "Paid tools like Squish and SpiraTest"
+  },
+  {
+    "question": "Which is an open-source system testing tool?",
+    "variants": [
+      "Chrome",
+      "Visual Studio",
+      "Notepad++",
+      "Robotium"
+    ],
+    "correct_answer": "Robotium"
+  },
+  {
+    "question": "What can system testing tools do?",
+    "variants": [
+      "Manage and automate test cases",
+      "Build websites",
+      "Manage salaries",
+      "Edit videos"
+    ],
+    "correct_answer": "Manage and automate test cases"
+  },
+  {
+    "question": "What else might system testing tools offer?",
+    "variants": [
+      "Photo editing",
+      "Game development",
+      "Requirements management",
+      "Data mining"
+    ],
+    "correct_answer": "Requirements management"
+  },
+  {
+    "question": "What is one limitation for small organizations in testing?",
+    "variants": [
+      "Not enough customers",
+      "Limited access to expensive automated tools",
+      "Too many developers",
+      "Overuse of AI"
+    ],
+    "correct_answer": "Limited access to expensive automated tools"
+  },
+  {
+    "question": "What does defect logging involve?",
+    "variants": [
+      "Sending reports to HR",
+      "Recording found errors for future fixing",
+      "Deleting backups",
+      "Updating documentation"
+    ],
+    "correct_answer": "Recording found errors for future fixing"
+  },
+  {
+    "question": "What is a major outcome of system testing?",
+    "variants": [
+      "Shorter login processes",
+      "Stable, user-ready software",
+      "Free mobile apps",
+      "Enhanced logo design"
+    ],
+    "correct_answer": "Stable, user-ready software"
+  },
+  {
+    "question": "What follows successful system testing?",
+    "variants": [
+      "Acceptance testing",
+      "Unit testing",
+      "Planning phase",
+      "Code refactoring"
+    ],
+    "correct_answer": "Acceptance testing"
+  },
+  {
+    "question": "What is the role of QA in system testing?",
+    "variants": [
+      "Ensure the application meets its requirements",
+      "Design product marketing",
+      "Develop mobile apps",
+      "Train sales staff"
+    ],
+    "correct_answer": "Ensure the application meets its requirements"
+  },
+  {
+    "question": "Who proposed the concept of the relational data model?",
+    "variants": [
+      "Edgar Codd",
+      "Bill Gates",
+      "Tim Berners-Lee",
+      "Charles Babbage"
+    ],
+    "correct_answer": "Edgar Codd"
+  },
+  {
+    "question": "What structure is used in the relational model to represent data?",
+    "variants": [
+      "Tables",
+      "Trees",
+      "Graphs",
+      "Lists"
+    ],
+    "correct_answer": "Tables"
+  },
+  {
+    "question": "In relational databases, what are table rows called?",
+    "variants": [
+      "Records (Tuples)",
+      "Attributes",
+      "Domains",
+      "Keys"
+    ],
+    "correct_answer": "Records (Tuples)"
+  },
+  {
+    "question": "What are table columns called in relational databases?",
+    "variants": [
+      "Records",
+      "Fields (Attributes)",
+      "Domains",
+      "Schemas"
+    ],
+    "correct_answer": "Fields (Attributes)"
+  },
+  {
+    "question": "What does a field represent in a relational table?",
+    "variants": [
+      "A column with values of the same type",
+      "A single row",
+      "A table connection",
+      "A unique ID"
+    ],
+    "correct_answer": "A column with values of the same type"
+  },
+  {
+    "question": "What is the intersection of a row and a column called?",
+    "variants": [
+      "Schema",
+      "Domain",
+      "Specific data value",
+      "Index"
+    ],
+    "correct_answer": "Specific data value"
+  },
+  {
+    "question": "What is a domain in relational algebra?",
+    "variants": [
+      "A group of tables",
+      "A key relationship",
+      "Set of all possible values for an attribute",
+      "A file system"
+    ],
+    "correct_answer": "Set of all possible values for an attribute"
+  },
+  {
+    "question": "What is a tuple in a relational model?",
+    "variants": [
+      "A table name",
+      "A row in a table",
+      "A column title",
+      "A database language"
+    ],
+    "correct_answer": "A row in a table"
+  },
+  {
+    "question": "What determines the degree of a relation?",
+    "variants": [
+      "Number of attributes",
+      "Number of rows",
+      "Number of keys",
+      "Number of schemas"
+    ],
+    "correct_answer": "Number of attributes"
+  },
+  {
+    "question": "What determines the cardinality of a relation?",
+    "variants": [
+      "Number of attributes",
+      "Number of tuples",
+      "Number of users",
+      "Number of constraints"
+    ],
+    "correct_answer": "Number of tuples"
+  },
+  {
+    "question": "What is a primary key?",
+    "variants": [
+      "An attribute that uniquely identifies a tuple",
+      "A duplicated field",
+      "A nullable value",
+      "A summary of a table"
+    ],
+    "correct_answer": "An attribute that uniquely identifies a tuple"
+  },
+  {
+    "question": "What happens if a primary key is not unique?",
+    "variants": [
+      "Database creates backup",
+      "An error message is shown",
+      "Key is renamed",
+      "Column is deleted"
+    ],
+    "correct_answer": "An error message is shown"
+  },
+  {
+    "question": "What is a foreign key?",
+    "variants": [
+      "A field linking one table to another",
+      "A deleted row",
+      "A null value",
+      "A duplicate primary key"
+    ],
+    "correct_answer": "A field linking one table to another"
+  },
+  {
+    "question": "What is the purpose of indexes in relational databases?",
+    "variants": [
+      "Encrypt data",
+      "Speed up searches and provide order",
+      "Generate passwords",
+      "Create backups"
+    ],
+    "correct_answer": "Speed up searches and provide order"
+  },
+  {
+    "question": "What happens when a record is added or deleted?",
+    "variants": [
+      "Table structure changes",
+      "Indexes are updated automatically",
+      "All keys reset",
+      "Table is duplicated"
+    ],
+    "correct_answer": "Indexes are updated automatically"
+  },
+  {
+    "question": "What do keys and indexes help establish?",
+    "variants": [
+      "User accounts",
+      "Code formatting",
+      "Relationships between tables",
+      "Query length"
+    ],
+    "correct_answer": "Relationships between tables"
+  },
+  {
+    "question": "What is a data schema?",
+    "variants": [
+      "A group of related tables",
+      "A programming function",
+      "A single row",
+      "A type of key"
+    ],
+    "correct_answer": "A group of related tables"
+  },
+  {
+    "question": "What is metadata?",
+    "variants": [
+      "Information about tables, fields, keys, etc.",
+      "Data stored in XML",
+      "Only passwords",
+      "Video file attributes"
+    ],
+    "correct_answer": "Information about tables, fields, keys, etc."
+  },
+  {
+    "question": "What must primary key values be?",
+    "variants": [
+      "Random and null",
+      "Unique and non-empty",
+      "Equal to each other",
+      "Set to zero"
+    ],
+    "correct_answer": "Unique and non-empty"
+  },
+  {
+    "question": "What type of relationship links one record in one table to one record in another?",
+    "variants": [
+      "One-to-One",
+      "Many-to-Many",
+      "One-to-Many",
+      "Self-referencing"
+    ],
+    "correct_answer": "One-to-One"
+  },
+  {
+    "question": "What is a One-to-Many relationship?",
+    "variants": [
+      "One record links to only one other",
+      "One record links to many in another table",
+      "Many records link to none",
+      "Many-to-self"
+    ],
+    "correct_answer": "One record links to many in another table"
+  },
+  {
+    "question": "What is a Many-to-Many relationship?",
+    "variants": [
+      "Every record is isolated",
+      "Records in both tables link to multiple records in the other",
+      "Only keys are linked",
+      "Keys must be null"
+    ],
+    "correct_answer": "Records in both tables link to multiple records in the other"
+  },
+  {
+    "question": "What is one advantage of relational databases?",
+    "variants": [
+      "Slower performance",
+      "Avoids redundancy and improves organization",
+      "Supports only one user",
+      "Requires low-level programming"
+    ],
+    "correct_answer": "Avoids redundancy and improves organization"
+  },
+  {
+    "question": "How do connections ensure data integrity?",
+    "variants": [
+      "Through constraints like foreign keys",
+      "By storing duplicates",
+      "Via manual input only",
+      "By exporting schemas"
+    ],
+    "correct_answer": "Through constraints like foreign keys"
+  },
+  {
+    "question": "What is one reason for widespread use of relational models?",
+    "variants": [
+      "Familiar table structure and mathematical foundation",
+      "They require less storage",
+      "Designed for XML only",
+      "Based on neural networks"
+    ],
+    "correct_answer": "Familiar table structure and mathematical foundation"
+  },
+  {
+    "question": "What is one processing unit in a relational model?",
+    "variants": [
+      "Row",
+      "Set of records (relation)",
+      "Column",
+      "Byte"
+    ],
+    "correct_answer": "Set of records (relation)"
+  },
+  {
+    "question": "What makes changes easy in relational databases?",
+    "variants": [
+      "Linked tables auto-update related data",
+      "Data is deleted on update",
+      "Keys are hidden",
+      "Structure resets automatically"
+    ],
+    "correct_answer": "Linked tables auto-update related data"
+  },
+  {
+    "question": "What is one disadvantage of the relational model?",
+    "variants": [
+      "Rigidity of data structure",
+      "Too much automation",
+      "Lack of mathematical foundation",
+      "Inability to use keys"
+    ],
+    "correct_answer": "Rigidity of data structure"
+  },
+  {
+    "question": "What defines the structure of a relational table?",
+    "variants": [
+      "Set of named columns",
+      "Group of stored files",
+      "HTML tags",
+      "Backup schedules"
+    ],
+    "correct_answer": "Set of named columns"
+  },
+  {
+    "question": "What is the main goal of information systems analysis and design?",
+    "variants": [
+      "Improve organizational systems using software",
+      "Train new employees in hardware setup",
+      "Write legal contracts",
+      "Design marketing campaigns"
+    ],
+    "correct_answer": "Improve organizational systems using software"
+  },
+  {
+    "question": "What is application software?",
+    "variants": [
+      "Hardware controller",
+      "User guide document",
+      "Software supporting organizational functions",
+      "Operating system kernel"
+    ],
+    "correct_answer": "Software supporting organizational functions"
+  },
+  {
+    "question": "What is systems software?",
+    "variants": [
+      "Used only for printing",
+      "Helps the computer function",
+      "Controls internet bandwidth",
+      "Manages marketing tasks"
+    ],
+    "correct_answer": "Helps the computer function"
+  },
+  {
+    "question": "What are methodologies in system development?",
+    "variants": [
+      "Step-by-step approaches for system creation",
+      "Backup techniques",
+      "Programming syntax rules",
+      "Budget tracking spreadsheets"
+    ],
+    "correct_answer": "Step-by-step approaches for system creation"
+  },
+  {
+    "question": "What are techniques in system development?",
+    "variants": [
+      "Employee scheduling software",
+      "Document translation tools",
+      "Procedures to guide analyst tasks",
+      "Coding frameworks"
+    ],
+    "correct_answer": "Procedures to guide analyst tasks"
+  },
+  {
+    "question": "What are CASE tools?",
+    "variants": [
+      "Computer-aided software engineering tools",
+      "Client assistance service equipment",
+      "Career advancement solutions",
+      "Centralized automated service engines"
+    ],
+    "correct_answer": "Computer-aided software engineering tools"
+  },
+  {
+    "question": "What is system analysis?",
+    "variants": [
+      "Creating UI designs",
+      "Decomposing systems to identify problems and goals",
+      "Encrypting customer data",
+      "Deploying mobile apps"
+    ],
+    "correct_answer": "Decomposing systems to identify problems and goals"
+  },
+  {
+    "question": "What is system design?",
+    "variants": [
+      "Planning new or updated systems to meet requirements",
+      "Hardware repair procedure",
+      "Social media interface layout",
+      "Database cleaning"
+    ],
+    "correct_answer": "Planning new or updated systems to meet requirements"
+  },
+  {
+    "question": "What are the three focuses of SAD (Systems Analysis & Design)?",
+    "variants": [
+      "Infrastructure, sales, marketing",
+      "Data, budgets, marketing",
+      "Systems, processes, technology",
+      "Finance, support, testing"
+    ],
+    "correct_answer": "Systems, processes, technology"
+  },
+  {
+    "question": "What is a system?",
+    "variants": [
+      "A single software module",
+      "A user-created document",
+      "An organized set of components to achieve a goal",
+      "A mobile app"
+    ],
+    "correct_answer": "An organized set of components to achieve a goal"
+  },
+  {
+    "question": "What is a key constraint of a system?",
+    "variants": [
+      "Random access memory",
+      "Components must be interconnected and serve a goal",
+      "It must be cloud-based",
+      "It must run on Linux"
+    ],
+    "correct_answer": "Components must be interconnected and serve a goal"
+  },
+  {
+    "question": "What does the processor in a system do?",
+    "variants": [
+      "Manages project timelines",
+      "Transforms input into output",
+      "Controls finance reports",
+      "Designs website graphics"
+    ],
+    "correct_answer": "Transforms input into output"
+  },
+  {
+    "question": "What is the function of feedback in a system?",
+    "variants": [
+      "Creates backups",
+      "Enables USB connection",
+      "Guides control by providing system information",
+      "Generates licenses"
+    ],
+    "correct_answer": "Guides control by providing system information"
+  },
+  {
+    "question": "What is a system boundary?",
+    "variants": [
+      "The limit that defines components and interfaces",
+      "A firewall setting",
+      "An internet speed cap",
+      "A hardware pin"
+    ],
+    "correct_answer": "The limit that defines components and interfaces"
+  },
+  {
+    "question": "What is an adaptive system?",
+    "variants": [
+      "A system that responds to environmental changes",
+      "A system with no interaction",
+      "A read-only archive",
+      "A database-only component"
+    ],
+    "correct_answer": "A system that responds to environmental changes"
+  },
+  {
+    "question": "What type of system doesn’t respond to the environment?",
+    "variants": [
+      "Adaptive",
+      "Non-adaptive",
+      "Dynamic",
+      "Open-source"
+    ],
+    "correct_answer": "Non-adaptive"
+  },
+  {
+    "question": "Which is an example of a man-made information system?",
+    "variants": [
+      "Banking system",
+      "Ecosystem",
+      "Climate model",
+      "Solar activity"
+    ],
+    "correct_answer": "Banking system"
+  },
+  {
+    "question": "What are the three types of man-made information systems?",
+    "variants": [
+      "Scientific, operational, dynamic",
+      "Legal, retail, control",
+      "Formal, informal, computer-based",
+      "Macro, micro, manual"
+    ],
+    "correct_answer": "Formal, informal, computer-based"
+  },
+  {
+    "question": "What does a schematic model show?",
+    "variants": [
+      "2D representation of system elements and links",
+      "Daily weather",
+      "Budget reports",
+      "User logins"
+    ],
+    "correct_answer": "2D representation of system elements and links"
+  },
+  {
+    "question": "What is a static system model?",
+    "variants": [
+      "Shows fixed relationships like cost-quantity",
+      "Predicts natural events",
+      "Generates test data",
+      "Measures emotion"
+    ],
+    "correct_answer": "Shows fixed relationships like cost-quantity"
+  },
+  {
+    "question": "What is strategic information used for?",
+    "variants": [
+      "Daily emails",
+      "Long-term planning by top management",
+      "Coding tutorials",
+      "Advertisement design"
+    ],
+    "correct_answer": "Long-term planning by top management"
+  },
+  {
+    "question": "What is operational information used for?",
+    "variants": [
+      "Market forecasts",
+      "Hiring new developers",
+      "Quarterly investment reports",
+      "Day-to-day operations"
+    ],
+    "correct_answer": "Day-to-day operations"
+  },
+  {
+    "question": "What is SDLC?",
+    "variants": [
+      "Standard Data Licensing Chart",
+      "Software Development Life Cycle",
+      "System Directory Link Controller",
+      "Software Design Logical Calculator"
+    ],
+    "correct_answer": "Software Development Life Cycle"
+  },
+  {
+    "question": "What does the feasibility study phase focus on?",
+    "variants": [
+      "Defining scope and assessing project viability",
+      "Launching user manuals",
+      "Planning advertisement",
+      "Training HR"
+    ],
+    "correct_answer": "Defining scope and assessing project viability"
+  },
+  {
+    "question": "What is created at the end of the analysis phase?",
+    "variants": [
+      "Software license",
+      "User passwords",
+      "Software Requirements Specification (SRS)",
+      "Printed flyers"
+    ],
+    "correct_answer": "Software Requirements Specification (SRS)"
+  },
+  {
+    "question": "What is the role of a system analyst?",
+    "variants": [
+      "Guide system development and match goals with system design",
+      "Manage app downloads",
+      "Write movie scripts",
+      "Clean data backups"
+    ],
+    "correct_answer": "Guide system development and match goals with system design"
+  },
+  {
+    "question": "What are key skills of a systems analyst?",
+    "variants": [
+      "Cooking and sewing",
+      "Acting and presentation",
+      "Interpersonal, analytical, technical, and management",
+      "Legal drafting"
+    ],
+    "correct_answer": "Interpersonal, analytical, technical, and management"
+  },
+  {
+    "question": "What is requirements determination?",
+    "variants": [
+      "Gathering details to define system needs",
+      "Creating advertisements",
+      "Installing software",
+      "Editing photos"
+    ],
+    "correct_answer": "Gathering details to define system needs"
+  },
+  {
+    "question": "What is interviewing used for in system design?",
+    "variants": [
+      "Collecting information from users",
+      "Deleting old logs",
+      "Formatting hardware",
+      "Copying websites"
+    ],
+    "correct_answer": "Collecting information from users"
+  },
+  {
+    "question": "What is the goal of a feasibility study?",
+    "variants": [
+      "Purchase office chairs",
+      "Decide if the project should proceed",
+      "Hire freelancers",
+      "Generate advertisements"
+    ],
+    "correct_answer": "Decide if the project should proceed"
+  }
+        ];
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Перемешиваем вопросы один раз при загрузке страницы (если нужно, уберите shuffleArray)
+        function shuffleArray(array) {
+          for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+          }
+          return array;
+        }
+
+        // Если хотите фиксированный порядок вопросов, закомментируйте следующую строку
+        // shuffleArray(questions);
+
+        showQuestion();
+
+        function showQuestion() {
+          if (currentQuestionIndex >= questions.length) {
+            document.getElementById('question').textContent = 'Вопросы закончились!';
+            document.getElementById('options').innerHTML = '';
+            return;
+          }
+
+          const currentQuestion = questions[currentQuestionIndex];
+          const questionElement = document.getElementById('question');
+          const optionsElement = document.getElementById('options');
+
+          questionElement.textContent = currentQuestion.question;
+          optionsElement.innerHTML = '';
+
+          // Варианты ответа всегда в одном порядке
+          currentQuestion.variants.forEach(option => {
+            const button = document.createElement('button');
+            button.className = 'option';
+            button.textContent = option;
+            button.onclick = () => checkAnswer(option, currentQuestion.correct_answer);
+            optionsElement.appendChild(button);
+          });
+        }
+
+        function checkAnswer(selectedAnswer, correctAnswer) {
+          const options = document.querySelectorAll('.option');
+
+          options.forEach(option => {
+            option.disabled = true;
+            if (option.textContent === correctAnswer) {
+              option.classList.add('correct');
+            }
+            if (option.textContent === selectedAnswer && selectedAnswer !== correctAnswer) {
+              option.classList.add('incorrect');
+            }
+          });
+
+          if (selectedAnswer === correctAnswer) {
+            score++;
+            document.getElementById('score').textContent = score;
+            currentQuestionIndex++;
+            setTimeout(showQuestion, 1000);
+          } else {
+            currentQuestionIndex++;
+            setTimeout(showQuestion, 1000);
+          }
+        }
+    </script>
+</body>
+</html>
